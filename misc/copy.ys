@@ -1,0 +1,40 @@
+# Name: Li Muyu		ID: 1120200800
+    .pos 0
+    irmovq stack, %rsp
+    irmovq src, %rdi
+    irmovq dest, %rsi
+    irmovq $3, %r8
+    call copy_block
+    halt
+
+.align 8 
+    # Source block 
+    src: 
+    .quad 0x00a 
+    .quad 0x0b0 
+    .quad 0xc00 
+    # Destination block 
+    dest: 
+    .quad 0x111 
+    .quad 0x222 
+    .quad 0x333
+
+copy_block:
+    xorq %rax, %rax
+loop:
+    andq %r8, %r8
+    je end
+    mrmovq (%rdi), %rbx
+    rmmovq %rbx, (%rsi)
+    xorq %rbx, %rax
+    irmovq $1, %r9
+    irmovq $8, %r10
+    subq %r9, %r8
+    addq %r10, %rdi
+    addq %r10, %rsi
+    jmp loop
+end:
+    ret
+
+    .pos 500
+stack:

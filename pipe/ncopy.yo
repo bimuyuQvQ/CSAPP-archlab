@@ -1,0 +1,48 @@
+0x000:                      | ncopy:
+                            | # You can modify this portion
+                            |   #Loop header
+0x000: 30f1ffffffffffffffff |   irmovq $-1,%rcx
+0x00a: 6021                 |   addq %rdx,%rcx    #limit
+0x00c: 6300                 |   xorq %rax,%rax       #count
+0x00e: 703700000000000000   |   jmp L2
+0x017:                      | L4:
+0x017: 40860000000000000000 |   rmmovq %r8, (%rsi)    # *dst = %r8  val1
+0x021: 40760800000000000000 |   rmmovq %rdi, 8(%rsi)  # *dst++ =%rdi val2
+0x02b: c0f61000000000000000 |   iaddq $16,%rsi         #dst++ dst++
+0x035: 2097                 |   rrmovq %r9, %rdi
+0x037:                      | L2:
+0x037: c0f10000000000000000 |   iaddq $0, %rcx      #limit>0 ?
+0x041: 71b700000000000000   |   jle L7
+0x04a: 50870000000000000000 |   mrmovq (%rdi), %r8    # val1 in %r8
+                            |   
+0x054: 2079                 |   rrmovq %rdi,%r9
+0x056: c0f91000000000000000 |   iaddq $16,%r9         #src++ src++ in %r9
+0x060: 50770800000000000000 |   mrmovq 8(%rdi),%rdi    #get val2
+0x06a: c0f1feffffffffffffff |   iaddq $-2, %rcx        #limit-2
+0x074: c0f80000000000000000 |   iaddq $0, %r8       #val1>0 ?
+0x07e: 719100000000000000   |   jle L3
+0x087: c0f00100000000000000 |   iaddq $1, %rax     #count++
+0x091:                      | L3:
+0x091: c0f70000000000000000 |   iaddq $0, %rdi     #val2>0
+0x09b: 711700000000000000   |   jle L4
+0x0a4: c0f00100000000000000 |   iaddq $1, %rax    #count++
+0x0ae: 701700000000000000   |   jmp L4
+0x0b7:                      | L7:
+0x0b7: 30fe0100000000000000 |   irmovq $1,%r14
+0x0c1: 62e2                 |   andq %r14,%rdx     #len is odd?
+0x0c3: 73fd00000000000000   |   je Done
+0x0cc: 50270000000000000000 |   mrmovq (%rdi), %rdx   #val1
+0x0d6: 40260000000000000000 |   rmmovq %rdx, (%rsi)  #dst =val
+0x0e0: c0f20000000000000000 |   iaddq $0,%rdx
+0x0ea: 71fd00000000000000   |   jle Done
+0x0f3: c0f00100000000000000 |   iaddq $1, %rax
+                            | ##################################################################
+                            | # Do not modify the following section of code
+                            | # Function epilogue.
+0x0fd:                      | Done:
+0x0fd: 90                   | 	ret
+                            | ##################################################################
+                            | # Keep the following label at the end of your function
+0x0fe:                      | End:
+                            | #/* $end ncopy-ys */
+                            | 

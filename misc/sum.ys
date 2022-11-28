@@ -1,0 +1,33 @@
+# Name: Li Muyu		ID: 1120200800
+    .pos 0
+    irmovq stack, %rsp
+    call sum_list
+    halt
+
+# Sample linked list 
+    .align 8 
+ele1: 
+    .quad 0x00a 
+    .quad ele2 
+ele2: 
+    .quad 0x0b0 
+    .quad ele3 
+ele3: 
+    .quad 0xc00 
+    .quad 0 
+
+sum_list:
+    irmovq ele1, %rsi
+    xorq %rax, %rax
+    irmovq $8, %r8
+    irmovq $1, %r9
+loop:
+    mrmovq (%rsi), %r10
+    addq %r10, %rax
+    mrmovq 8(%rsi), %rsi
+    andq %rsi, %rsi
+    jne loop
+    ret
+
+    .pos 200
+stack:
